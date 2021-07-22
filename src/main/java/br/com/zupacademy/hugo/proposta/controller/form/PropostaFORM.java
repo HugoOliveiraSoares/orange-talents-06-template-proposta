@@ -2,6 +2,7 @@ package br.com.zupacademy.hugo.proposta.controller.form;
 
 import br.com.zupacademy.hugo.proposta.model.Proposta;
 import br.com.zupacademy.hugo.proposta.validator.CPForCNPJ;
+import br.com.zupacademy.hugo.proposta.validator.Unique;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -10,7 +11,7 @@ import javax.validation.constraints.Positive;
 
 public class PropostaFORM {
 
-    @NotNull @NotEmpty @CPForCNPJ
+    @NotNull @NotEmpty @CPForCNPJ @Unique(domainClass = Proposta.class, fieldName = "documento", message = "Já existe uma proposta cadastrada com esse CPF/CNPJ")
     private String documento;
     @NotNull @NotEmpty @Email
     private String email;

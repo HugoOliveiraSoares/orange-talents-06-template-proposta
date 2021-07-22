@@ -1,10 +1,12 @@
 package br.com.zupacademy.hugo.proposta.controller;
 
 import br.com.zupacademy.hugo.proposta.controller.dto.ValidationErrorsOutputDto;
+import br.com.zupacademy.hugo.proposta.validator.ApiErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -47,6 +49,16 @@ public class ValidationErrorHandler {
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
 
         return buildValidationErrors(globalErrors, fieldErrors);
+
+    }
+
+    @ExceptionHandler(ApiErrorException.class)
+    public ResponseEntity<ValidationErrorsOutputDto> handleApiErrorException(ApiErrorException exception){
+
+        ValidationErrorsOutputDto outputDto = new ValidationErrorsOutputDto();
+        outputDto.addError(exception.getReason());
+
+        return ResponseEntity.status(exception.getHttpStatus()).body(outputDto);
 
     }
 
