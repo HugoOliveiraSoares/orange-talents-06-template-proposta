@@ -1,5 +1,6 @@
 package br.com.zupacademy.hugo.proposta.controller;
 
+import br.com.zupacademy.hugo.proposta.controller.dto.PropostaDTO;
 import br.com.zupacademy.hugo.proposta.controller.form.PropostaFORM;
 import br.com.zupacademy.hugo.proposta.model.Proposta;
 import br.com.zupacademy.hugo.proposta.repository.PropostaRepository;
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -22,11 +22,22 @@ public class NovaPropostaController {
     public ResponseEntity<?> novaProposta(@RequestBody @Valid PropostaFORM propostaFORM, UriComponentsBuilder builder){
 
         Proposta proposta = propostaFORM.toModel();
+        proposta.validadaLegibilidade();
         propostaRepository.save(proposta);
 
         URI urlProposta = builder.path("/propostas/{id}").build(proposta.getId());
         return ResponseEntity.created(urlProposta).build();
 
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<?> consulta(@PathVariable Long id){
+
+        Proposta proposta = propostaRepository.getById(id);
+
+        PropostaDTO propostaDTO = new PropostaDTO(proposta);
+
+        return ResponseEntity.ok(propostaDTO);
     }
 
 }
