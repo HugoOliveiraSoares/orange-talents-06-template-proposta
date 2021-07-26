@@ -1,6 +1,7 @@
 package br.com.zupacademy.hugo.proposta.model;
 
-import br.com.zupacademy.hugo.proposta.controller.ResponseProposta;
+import br.com.zupacademy.hugo.proposta.controller.dto.ResponseProposta;
+import br.com.zupacademy.hugo.proposta.controller.form.PropostaConsulta;
 import br.com.zupacademy.hugo.proposta.validator.CPForCNPJ;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -14,7 +15,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.util.Optional;
 
 @Entity
 public class Proposta {

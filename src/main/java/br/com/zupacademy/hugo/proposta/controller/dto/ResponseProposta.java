@@ -1,4 +1,4 @@
-package br.com.zupacademy.hugo.proposta.controller;
+package br.com.zupacademy.hugo.proposta.controller.dto;
 
 import br.com.zupacademy.hugo.proposta.model.Legibilidade;
 

@@ -1,5 +1,6 @@
-package br.com.zupacademy.hugo.proposta.model;
+package br.com.zupacademy.hugo.proposta.controller.form;
 
+import br.com.zupacademy.hugo.proposta.model.Proposta;
 import br.com.zupacademy.hugo.proposta.validator.CPForCNPJ;
 
 import javax.validation.constraints.NotEmpty;
