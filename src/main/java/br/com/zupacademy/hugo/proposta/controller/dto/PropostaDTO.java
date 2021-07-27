@@ -8,16 +8,12 @@ public class PropostaDTO {
     private String documento;
     private String email;
     private String nome;
-    private String endereco;
-    private Float salario;
     private Legibilidade legibilidade;
 
     public PropostaDTO(Proposta proposta) {
         this.documento = proposta.getDocumento();
         this.email = proposta.getEmail();
         this.nome = proposta.getNome();
-        this.endereco = proposta.getEndereco();
-        this.salario = proposta.getSalario();
         this.legibilidade = proposta.getLegibilidade();
     }
 
@@ -31,14 +27,6 @@ public class PropostaDTO {
 
     public String getNome() {
         return nome;
-    }
-
-    public String getEndereco() {
-        return endereco;
-    }
-
-    public Float getSalario() {
-        return salario;
     }
 
     public Legibilidade getLegibilidade() {

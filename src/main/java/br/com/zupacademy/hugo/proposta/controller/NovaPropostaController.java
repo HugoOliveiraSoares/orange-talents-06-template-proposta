@@ -20,6 +20,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/nova-proposta")
@@ -41,11 +42,13 @@ public class NovaPropostaController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<?> consulta(@PathVariable Long id){
+    public ResponseEntity<?> consultaProposta(@PathVariable Long id){
 
-        Proposta proposta = propostaRepository.getById(id);
+        Optional<Proposta> proposta = propostaRepository.findById(id);
+        if (proposta.isEmpty())
+            return ResponseEntity.notFound().build();
 
-        PropostaDTO propostaDTO = new PropostaDTO(proposta);
+        PropostaDTO propostaDTO = new PropostaDTO(proposta.get());
 
         return ResponseEntity.ok(propostaDTO);
     }
