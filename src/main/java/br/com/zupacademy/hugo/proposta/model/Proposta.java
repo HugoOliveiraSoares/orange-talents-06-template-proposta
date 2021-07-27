@@ -3,13 +3,11 @@ package br.com.zupacademy.hugo.proposta.model;
 import br.com.zupacademy.hugo.proposta.controller.dto.ResponseProposta;
 import br.com.zupacademy.hugo.proposta.controller.form.PropostaConsulta;
 import br.com.zupacademy.hugo.proposta.validator.CPForCNPJ;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -32,7 +30,10 @@ public class Proposta {
     private String endereco;
     @NotNull @Positive
     private Float salario;
+    @Enumerated(EnumType.STRING)
     private Legibilidade legibilidade;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Cartao cartao;
 
     @Deprecated
     public Proposta() {
@@ -46,7 +47,7 @@ public class Proposta {
         this.salario = salario;
     }
 
-    public void validadaLegibilidade() {
+    public void validaLegibilidade() {
 
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:9999/api/solicitacao";
@@ -89,5 +90,9 @@ public class Proposta {
 
     public Legibilidade getLegibilidade() {
         return legibilidade;
+    }
+
+    public void setCartao(Cartao cartao) {
+        this.cartao = cartao;
     }
 }
