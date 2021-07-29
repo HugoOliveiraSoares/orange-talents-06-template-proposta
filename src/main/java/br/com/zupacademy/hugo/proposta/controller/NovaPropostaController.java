@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/nova-proposta")
+@RequestMapping("/proposta")
 public class NovaPropostaController {
 
     @Autowired
