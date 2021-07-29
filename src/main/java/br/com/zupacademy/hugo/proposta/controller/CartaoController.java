@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/cartao/{id}")
-public class BiometricaController {
+public class CartaoController {
 
     @Autowired
     private CartaoRepository cartaoRepository;
