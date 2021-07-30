@@ -34,7 +34,7 @@ public class CartaoController {
     private BloqueioRepository bloqueioRepository;
 
     @Transactional
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(name = "/bloqueio", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> bloqueiaCartao(@PathVariable String id, HttpServletRequest request){
 
         Optional<Cartao> cartao = cartaoRepository.findById(id);

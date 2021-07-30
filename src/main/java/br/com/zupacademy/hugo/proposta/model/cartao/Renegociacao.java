@@ -1,24 +1,27 @@
-package br.com.zupacademy.hugo.proposta.model;
+package br.com.zupacademy.hugo.proposta.model.cartao;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Entity
-public class Parcela {
+public class Renegociacao {
 
     @Id
     private String id;
     private int quantidade;
     private int valor;
+    private LocalDateTime dataDeCriacao;
 
     @Deprecated
-    public Parcela() {
+    public Renegociacao() {
     }
 
-    public Parcela(String id, int quantidade, int valor) {
+    public Renegociacao(String id, int quantidade, int valor, LocalDateTime dataDeCriacao) {
         this.id = id;
         this.quantidade = quantidade;
         this.valor = valor;
+        this.dataDeCriacao = dataDeCriacao;
     }
 
     public String getId() {
@@ -31,5 +34,9 @@ public class Parcela {
 
     public int getValor() {
         return valor;
+    }
+
+    public LocalDateTime getDataDeCriacao() {
+        return dataDeCriacao;
     }
 }

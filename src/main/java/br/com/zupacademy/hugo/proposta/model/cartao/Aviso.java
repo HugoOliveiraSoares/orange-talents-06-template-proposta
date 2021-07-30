@@ -1,4 +1,4 @@
-package br.com.zupacademy.hugo.proposta.model;
+package br.com.zupacademy.hugo.proposta.model.cartao;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

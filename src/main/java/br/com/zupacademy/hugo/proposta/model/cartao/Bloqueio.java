@@ -1,4 +1,4 @@
-package br.com.zupacademy.hugo.proposta.model;
+package br.com.zupacademy.hugo.proposta.model.cartao;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,6 +23,7 @@ public class Bloqueio {
         this.sistemaResponsavel = sistemaResponsavel;
         this.ativo = ativo;
     }
+
 
     public String getId() {
         return id;

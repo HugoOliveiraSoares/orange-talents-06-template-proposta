@@ -1,5 +1,7 @@
 package br.com.zupacademy.hugo.proposta.model;
 
+import br.com.zupacademy.hugo.proposta.model.cartao.*;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
