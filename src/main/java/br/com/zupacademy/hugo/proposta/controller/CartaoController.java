@@ -82,17 +82,27 @@ public class CartaoController {
         return ResponseEntity.created(urlProposta).build();
     }
 
-    @PostMapping("/aviso")
+    @PostMapping(value = "/aviso", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> avisaBanco(@PathVariable String id, @RequestBody @Valid AvisoFORM avisoFORM, HttpServletRequest request ){
 
         Optional<Cartao> cartao = cartaoRepository.findById(id);
         if (cartao.isEmpty())
             return ResponseEntity.notFound().build();
 
-        Avisa avisa = avisoFORM.toModel(request.getRemoteAddr(), request.getHeader("User-Agent"), cartao.get());
-        avisaRepository.save(avisa);
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8888/api/cartoes/" + cartao.get().getId() + "/avisos";
 
-        return ResponseEntity.ok().build();
+        try{
+            restTemplate.postForObject(url, avisoFORM, String.class);
+
+            Avisa avisa = avisoFORM.toModel(request.getRemoteAddr(), request.getHeader("User-Agent"), cartao.get());
+            avisaRepository.save(avisa);
+
+            return ResponseEntity.ok().build();
+        }catch (HttpClientErrorException | HttpServerErrorException exception) {
+            return ResponseEntity.unprocessableEntity().body(exception.getResponseBodyAsString());
+        }
+
 
     }
 
