@@ -1,15 +1,21 @@
 package br.com.zupacademy.hugo.proposta.controller;
 
 import br.com.zupacademy.hugo.proposta.controller.dto.BiometriaFORM;
-import br.com.zupacademy.hugo.proposta.model.Biometria;
-import br.com.zupacademy.hugo.proposta.model.Cartao;
+import br.com.zupacademy.hugo.proposta.controller.form.BloquearRequest;
+import br.com.zupacademy.hugo.proposta.model.*;
 import br.com.zupacademy.hugo.proposta.repository.BiometriaRepository;
+import br.com.zupacademy.hugo.proposta.repository.BloqueioRepository;
 import br.com.zupacademy.hugo.proposta.repository.CartaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.net.URI;
 import java.util.Optional;
@@ -24,8 +30,35 @@ public class CartaoController {
     @Autowired
     private BiometriaRepository biometriaRepository;
 
+    @Autowired
+    private BloqueioRepository bloqueioRepository;
+
     @Transactional
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> bloqueiaCartao(@PathVariable String id, HttpServletRequest request){
+
+        Optional<Cartao> cartao = cartaoRepository.findById(id);
+        if (cartao.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8888/api/cartoes/" + cartao.get().getId() + "/bloqueios";
+        BloquearRequest bloquearRequest = new BloquearRequest("proposta");
+
+        try {
+            String s = restTemplate.postForObject(url, bloquearRequest, String.class);
+            Bloqueado bloqueio = new Bloqueado(request.getRemoteAddr(), request.getHeader("User-Agent"), cartao.get());
+            bloqueioRepository.save(bloqueio);
+
+            return ResponseEntity.ok(s);
+        } catch (HttpClientErrorException | HttpServerErrorException exception){
+            return ResponseEntity.unprocessableEntity().body(exception.getResponseBodyAsString());
+    }
+
+    }
+
+    @Transactional
+    @PostMapping("/biometria")
     public ResponseEntity<?> novaBiometria(@PathVariable String id, @RequestBody BiometriaFORM biometriaFORM, UriComponentsBuilder builder){
 
         Optional<Cartao> cartao = cartaoRepository.findById(id);
