@@ -1,8 +1,10 @@
 package br.com.zupacademy.hugo.proposta.controller;
 
 import br.com.zupacademy.hugo.proposta.controller.dto.BiometriaFORM;
+import br.com.zupacademy.hugo.proposta.controller.form.AvisoFORM;
 import br.com.zupacademy.hugo.proposta.controller.form.BloquearRequest;
 import br.com.zupacademy.hugo.proposta.model.*;
+import br.com.zupacademy.hugo.proposta.repository.AvisaRepository;
 import br.com.zupacademy.hugo.proposta.repository.BiometriaRepository;
 import br.com.zupacademy.hugo.proposta.repository.BloqueioRepository;
 import br.com.zupacademy.hugo.proposta.repository.CartaoRepository;
@@ -17,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
@@ -33,8 +36,11 @@ public class CartaoController {
     @Autowired
     private BloqueioRepository bloqueioRepository;
 
+    @Autowired
+    private AvisaRepository avisaRepository;
+
     @Transactional
-    @PostMapping(name = "/bloqueio", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/bloqueio",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> bloqueiaCartao(@PathVariable String id, HttpServletRequest request){
 
         Optional<Cartao> cartao = cartaoRepository.findById(id);
@@ -74,6 +80,20 @@ public class CartaoController {
         URI urlProposta = builder.path("/biometria/{id}").build(biometria.getId());
 
         return ResponseEntity.created(urlProposta).build();
+    }
+
+    @PostMapping("/aviso")
+    public ResponseEntity<?> avisaBanco(@PathVariable String id, @RequestBody @Valid AvisoFORM avisoFORM, HttpServletRequest request ){
+
+        Optional<Cartao> cartao = cartaoRepository.findById(id);
+        if (cartao.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        Avisa avisa = avisoFORM.toModel(request.getRemoteAddr(), request.getHeader("User-Agent"), cartao.get());
+        avisaRepository.save(avisa);
+
+        return ResponseEntity.ok().build();
+
     }
 
 }
