@@ -1,13 +1,13 @@
 package br.com.zupacademy.hugo.proposta.controller;
 
 import br.com.zupacademy.hugo.proposta.controller.dto.BiometriaFORM;
+import br.com.zupacademy.hugo.proposta.model.CarteiraDigital;
 import br.com.zupacademy.hugo.proposta.controller.form.AvisoFORM;
 import br.com.zupacademy.hugo.proposta.controller.form.BloquearRequest;
+import br.com.zupacademy.hugo.proposta.controller.form.CarteiraFORM;
 import br.com.zupacademy.hugo.proposta.model.*;
-import br.com.zupacademy.hugo.proposta.repository.AvisaRepository;
-import br.com.zupacademy.hugo.proposta.repository.BiometriaRepository;
-import br.com.zupacademy.hugo.proposta.repository.BloqueioRepository;
-import br.com.zupacademy.hugo.proposta.repository.CartaoRepository;
+import br.com.zupacademy.hugo.proposta.model.cartao.Carteira;
+import br.com.zupacademy.hugo.proposta.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +38,9 @@ public class CartaoController {
 
     @Autowired
     private AvisaRepository avisaRepository;
+
+    @Autowired
+    private CarteiraRepository carteiraRepository;
 
     @Transactional
     @PostMapping(value = "/bloqueio",produces = MediaType.APPLICATION_JSON_VALUE)
@@ -103,7 +106,31 @@ public class CartaoController {
             return ResponseEntity.unprocessableEntity().body(exception.getResponseBodyAsString());
         }
 
-
     }
 
+    @PostMapping(value = "/carteira", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> carteira(@PathVariable String id, @RequestBody @Valid CarteiraFORM carteiraFORM, UriComponentsBuilder builder){
+
+        Optional<Cartao> cartao = cartaoRepository.findById(id);
+        if (cartao.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8888/api/cartoes/" + cartao.get().getId() + "/carteiras";
+
+        try {
+            CarteiraDigital carteiraDigital = restTemplate.postForObject(url, carteiraFORM, CarteiraDigital.class);
+            assert carteiraDigital != null;
+
+            carteiraDigital.setEmissor(carteiraFORM.getCarteira());
+            carteiraDigital.setCartao(cartao.get());
+            carteiraRepository.save(carteiraDigital);
+
+            URI urlProposta = builder.path("/cartao/{id}/carteira/{id}").build(id, carteiraDigital.getId());
+            return ResponseEntity.created(urlProposta).build();
+        }catch (HttpClientErrorException | HttpServerErrorException exception) {
+            return ResponseEntity.unprocessableEntity().body(exception.getResponseBodyAsString());
+        }
+
+    }
 }
