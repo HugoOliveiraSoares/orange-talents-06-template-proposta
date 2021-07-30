@@ -25,6 +25,8 @@ public class Cartao {
     @OneToOne(cascade = CascadeType.PERSIST)
     private Vencimento vencimento;
     private Long idProposta;
+    @Enumerated(EnumType.STRING)
+    private Estado status;
 
     @Deprecated
     public Cartao() {
@@ -88,5 +90,13 @@ public class Cartao {
 
     public Long getIdProposta() {
         return idProposta;
+    }
+
+    public Estado getStatus() {
+        return status;
+    }
+
+    public void bloqueiaCartao() {
+        this.status = Estado.BLOQUEADO;
     }
 }

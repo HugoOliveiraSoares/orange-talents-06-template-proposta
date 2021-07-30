@@ -49,6 +49,8 @@ public class CartaoController {
             String s = restTemplate.postForObject(url, bloquearRequest, String.class);
             Bloqueado bloqueio = new Bloqueado(request.getRemoteAddr(), request.getHeader("User-Agent"), cartao.get());
             bloqueioRepository.save(bloqueio);
+            cartao.get().bloqueiaCartao();
+            cartaoRepository.save(cartao.get());
 
             return ResponseEntity.ok(s);
         } catch (HttpClientErrorException | HttpServerErrorException exception){
