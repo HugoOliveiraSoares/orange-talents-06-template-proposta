@@ -7,12 +7,12 @@ import br.com.zupacademy.hugo.proposta.model.Cartao;
 import br.com.zupacademy.hugo.proposta.model.Legibilidade;
 import br.com.zupacademy.hugo.proposta.model.Proposta;
 import br.com.zupacademy.hugo.proposta.repository.PropostaRepository;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,6 +33,8 @@ public class NovaPropostaController {
     public ResponseEntity<?> novaProposta(@RequestBody @Valid PropostaFORM propostaFORM, UriComponentsBuilder builder){
 
         Proposta proposta = propostaFORM.toModel();
+        propostaRepository.save(proposta);
+
         proposta.validaLegibilidade();
         propostaRepository.save(proposta);
 
@@ -54,26 +56,26 @@ public class NovaPropostaController {
     }
 
     @Transactional
-    @Scheduled(initialDelay = 2000, fixedDelay = 60000)
-    public void associaCartao() throws NotFoundException {
+    @Scheduled(initialDelay = 5000, fixedDelay = 60000)
+    public void associaCartao() {
 
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8888/api/cartoes";
+        String url = "http://localhost:8888/api/cartoes?idProposta=";
 
         List<Proposta> propostas = propostaRepository.findByCartaoIsNullAndLegibilidadeIs(Legibilidade.ELEGIVEL);
         if (propostas.isEmpty())
-            throw new NotFoundException("Proposta não encontrada!!!");
+            System.out.println("Proposta não encontrada!!!");
 
         propostas.forEach(proposta -> {
             try {
-                PropostaConsulta consulta = new PropostaConsulta(proposta);
-                Cartao cartao = restTemplate.postForObject(url, consulta, Cartao.class);
+
+                Cartao cartao = restTemplate.getForObject(url+proposta.getId(), Cartao.class);
 
                 proposta.setCartao(cartao);
                 propostaRepository.save(proposta);
                 System.out.println("Funcionou " + proposta.getId());
 
-            }catch (HttpClientErrorException exception){
+            }catch (HttpClientErrorException | HttpServerErrorException exception){
                 System.out.println( exception.getResponseBodyAsString() );
             }
         });
