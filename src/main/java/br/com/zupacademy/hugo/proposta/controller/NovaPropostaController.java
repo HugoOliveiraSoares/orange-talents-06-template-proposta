@@ -7,9 +7,11 @@ import br.com.zupacademy.hugo.proposta.model.Cartao;
 import br.com.zupacademy.hugo.proposta.model.Legibilidade;
 import br.com.zupacademy.hugo.proposta.model.Proposta;
 import br.com.zupacademy.hugo.proposta.repository.PropostaRepository;
+import br.com.zupacademy.hugo.proposta.validator.UniqueDocumentoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -28,6 +30,14 @@ public class NovaPropostaController {
 
     @Autowired
     private PropostaRepository propostaRepository;
+
+    @Autowired
+    private UniqueDocumentoValidator uniqueDocumentoValidator;
+
+    @InitBinder
+    public void init(WebDataBinder binder){
+        binder.addValidators(uniqueDocumentoValidator);
+    }
 
     @PostMapping
     public ResponseEntity<?> novaProposta(@RequestBody @Valid PropostaFORM propostaFORM, UriComponentsBuilder builder){
