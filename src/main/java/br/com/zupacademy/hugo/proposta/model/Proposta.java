@@ -3,7 +3,7 @@ package br.com.zupacademy.hugo.proposta.model;
 import br.com.zupacademy.hugo.proposta.controller.dto.ResponseProposta;
 import br.com.zupacademy.hugo.proposta.controller.form.PropostaConsulta;
 import br.com.zupacademy.hugo.proposta.validator.CPForCNPJ;
-import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,7 +20,7 @@ public class Proposta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull @NotEmpty @CPForCNPJ
+    @NotNull @NotEmpty
     private String documento;
     @NotNull @NotEmpty @Email
     private String email;
@@ -39,8 +39,11 @@ public class Proposta {
     public Proposta() {
     }
 
+    /**
+     * @param documento STRING EM TEXTO LIMPO
+     **/
     public Proposta(@Valid String documento, String email, String nome, String endereco, Float salario) {
-        this.documento = documento;
+        this.documento = new BCryptPasswordEncoder().encode(documento);
         this.email = email;
         this.nome = nome;
         this.endereco = endereco;

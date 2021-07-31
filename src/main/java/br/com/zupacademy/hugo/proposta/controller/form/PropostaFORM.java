@@ -11,7 +11,7 @@ import javax.validation.constraints.Positive;
 
 public class PropostaFORM {
 
-    @NotNull @NotEmpty @CPForCNPJ @Unique(domainClass = Proposta.class, fieldName = "documento", message = "Já existe uma proposta cadastrada com esse CPF/CNPJ")
+    @NotNull @NotEmpty @CPForCNPJ
     private String documento;
     @NotNull @NotEmpty @Email
     private String email;
