@@ -136,6 +136,22 @@ services:
       VAULT_TOKEN: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_ADDR: http://127.0.0.1:8200
 
+  proposta:
+    image: 'hugo/proposta'
+    container_name: proposta
+    ports:
+      - 8080:8080
+    depends_on:
+      - keycloak
+      - postgres
+      - prometheus
+      - jaeger
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/proposta
+      - KEYCLOAK_ISSUER_URI=http://keycloak:18080/auth/realms/proposta
+      - KEYCLOAK_JWKS_URI=http://keycloak:18080/auth/realms/proposta/protocol/openid-connect/certs
+      - JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+
 volumes:
   grafana-volume:
   prometheus-volume:
