@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 
 public class PropostaFORM {
 
@@ -20,7 +21,7 @@ public class PropostaFORM {
     @NotNull @NotEmpty
     private String endereco;
     @NotNull @Positive
-    private Float salario;
+    private BigDecimal salario;
 
     public String getDocumento() {
         return documento;
@@ -38,7 +39,7 @@ public class PropostaFORM {
         return endereco;
     }
 
-    public Float getSalario() {
+    public BigDecimal getSalario() {
         return salario;
     }
 

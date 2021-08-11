@@ -29,7 +29,7 @@ public class Proposta {
     @NotNull @NotEmpty
     private String endereco;
     @NotNull @Positive
-    private Float salario;
+    private BigDecimal salario;
     @Enumerated(EnumType.STRING)
     private Legibilidade legibilidade;
     @OneToOne(cascade = CascadeType.PERSIST)
@@ -42,7 +42,7 @@ public class Proposta {
     /**
      * @param documento STRING EM TEXTO LIMPO
      **/
-    public Proposta(@Valid String documento, String email, String nome, String endereco, Float salario) {
+    public Proposta(@Valid String documento, String email, String nome, String endereco, BigDecimal salario) {
         this.documento = new BCryptPasswordEncoder().encode(documento);
         this.email = email;
         this.nome = nome;
@@ -87,7 +87,7 @@ public class Proposta {
         return endereco;
     }
 
-    public Float getSalario() {
+    public BigDecimal getSalario() {
         return salario;
     }
 
